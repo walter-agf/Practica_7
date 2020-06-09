@@ -9,8 +9,66 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # Funciones propias
-from sortfunc import *
+from Sortfunc import *
 
 L_sin_ordenar=[]
 # Metodos de ordenamiento
@@ -90,6 +148,7 @@ def loadInputData():
         # Ventana para la seleccion del archivo
         fname = askopenfilename()        
         L_sin_ordenar = loadFromFile(fname)
+        print (L_sin_ordenar)
         x_axis = range(1,len(L_sin_ordenar)+1)        
         graficaDatos.clear()
         graficaDatos.stem(x_axis, L_sin_ordenar, use_line_collection=True)
@@ -178,6 +237,44 @@ def sortHandler():
     res_cycles.config(text = 'Iteraciones: '+str(cycles))
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 '''**** Interfaz grafica ****'''
 
 ANCHO =650
@@ -195,9 +292,9 @@ L_sin_ordenar = []
 # Ventana principal
 root = Tk() 
 root.geometry(str(ANCHO)+'x'+str(ALTO))
-root.title("PRACTICA 8")
+root.title("PRACTICA 7")
 root.grid(widthInc=ANCHO, heightInc = ALTO)
-print(root.grid_size())
+#print(root.grid_size())
 root.resizable(width=False, height=False)
 
 # Elementos de la ventana (widgets)
@@ -231,6 +328,12 @@ sel = Radiobutton(fMethod, text="Selección", variable = met, value = 2)
 sel.pack(side=TOP, anchor=W, expand=YES)
 # 2.3. Radio Button para escoger Python sort
 sel = Radiobutton(fMethod, text="Python", variable = met, value = 3)
+sel.pack(side=TOP, anchor=W, expand=YES)
+#_______________________________________________________
+sel = Radiobutton(fMethod, text="Merge Sort", variable = met, value = 4)
+sel.pack(side=TOP, anchor=W, expand=YES)
+#_______________________________________________________
+sel = Radiobutton(fMethod, text="Quick Sort", variable = met, value = 5)
 sel.pack(side=TOP, anchor=W, expand=YES)
 # 2.4. Separador horizontal
 sep3 = Separator(fMethod,orient=HORIZONTAL)
