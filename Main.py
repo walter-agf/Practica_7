@@ -3,6 +3,7 @@ from tkinter import *
 from tkinter.ttk import Separator
 from tkinter.filedialog import askopenfilename 
 from time import *
+from timeit import default_timer
 
 # Funciones de matplotlib para graficar datos
 import matplotlib.pyplot as plt
@@ -83,7 +84,7 @@ def animacionMerge():
         Fin ciclo interno
         ...
     '''
-    lista = L
+    
     def sM(L):
         def mer(left,right):
             """
@@ -115,14 +116,6 @@ def animacionMerge():
         Asume que L es una lista y retorna una nueva lista ordenada
         """
         #print (L)
-        # Actualización de la gráfica
-        # (Descomentar una vez se haya implementado
-        # la función de selección)
-        graficaDatos.clear()
-        plt.pause(0.2)
-        graficaDatos.stem(abscisas, lista , use_line_collection=True)
-        graficaDatos.grid()        
-        canvas.draw()
         #print (cont)
         if len(L) < 2:
             return L[:]
@@ -133,7 +126,16 @@ def animacionMerge():
             #print (left)
             #print (right)
             return mer(left,right)
-    sM(L)
+    L = sM(L)
+    #print (L)
+    # Actualización de la gráfica
+    # (Descomentar una vez se haya implementado
+    # la función de selección)
+    graficaDatos.clear()
+    plt.pause(0.2)
+    graficaDatos.stem(abscisas, L, use_line_collection=True)
+    graficaDatos.grid()        
+    canvas.draw()
     '''Fin ciclo externo'''
     
     
@@ -149,19 +151,11 @@ def animacionQuick():
         Fin ciclo interno
         ...
     '''
-    lista = L
+    
     def sQ(L):
         ''' 
         Divide y venceras con un pivote 
         '''
-        # Actualización de la gráfica
-        # (Descomentar una vez se haya implementado
-        # la función de selección)
-        graficaDatos.clear()
-        plt.pause(0.2)
-        graficaDatos.stem(abscisas, lista, use_line_collection=True)
-        graficaDatos.grid()        
-        canvas.draw()
         #print (cont)
         left =[]
         centro = []
@@ -183,7 +177,16 @@ def animacionQuick():
             return left+centro+right
         else:
             return L
-    sQ(L)
+    L = sQ(L)
+    #print (L)
+    # Actualización de la gráfica
+    # (Descomentar una vez se haya implementado
+    # la función de selección)
+    graficaDatos.clear()
+    plt.pause(0.2)
+    graficaDatos.stem(abscisas, L, use_line_collection=True)
+    graficaDatos.grid()        
+    canvas.draw()
     '''Fin ciclo externo'''
     
 # Funciones handler
@@ -207,7 +210,18 @@ def generarLista():
     simiar a como se obtuvo el valor de n
     Tener en cuenta posibles errores de usuario (ingreso de letras, por ejemplo)
     '''
-    L_sin_ordenar = createRandomList(n, lowest, highest)
+    if lowest < highest and n > 0:
+        L_sin_ordenar = createRandomList(n, lowest, highest)
+    else:
+        print('Error en loadInputData')
+        root = Tk()
+        root.geometry(str(450)+'x'+str(70))
+        root.title("Error")
+        #root.text('jeje')
+        etiqueta=Label(root, text='Error en Datos, limite inferior es mayor o igual que limite').place(x=0,y=10)
+        etiqueta2=Label(root, text='superior, o el numero de datos es una cantidad inferior a 0  ').place(x=0,y=30)
+   
+    
     x_axis = range(1,len(L_sin_ordenar)+1)        
     graficaDatos.clear()
     graficaDatos.stem(x_axis, L_sin_ordenar, use_line_collection=True)
@@ -290,87 +304,86 @@ def sortHandler():
     graficaDatos.clear()
     # Ejecucion de los metodos elegidos
     if met.get() == 1:
+        ''' Tomar medida inicial de tiempo '''
+        start = default_timer()
         if selPaso.get() == 1:
             animacionBurbuja()
-            start=start=time.perf_counter()
-        ''' Tomar medida inicial de tiempo '''
         
         cycles = sortBurbuja(L_burbuja)
         ''' Tomar medida final de tiempo
             Calcular tiempo de ejecución (t_elapsed)'''
         
         graficaDatos.stem(abscisas, L_burbuja, use_line_collection=True)
-        end=start=time.perf_counter()
+        end = default_timer()
         t_elapsed=end-start
         print('Time in us: ', t_elapsed)
         print('Algorithm iterations: ', cycles)
     elif met.get() == 2:
+        ''' Tomar medida inicial de tiempo '''
+        start = default_timer()
         if selPaso.get() == 1:
             animacionSeleccion()
-        ''' Tomar medida inicial de tiempo '''
-        start=start=time.perf_counter()
+        
         cycles = sortSeleccion(L_seleccion)
         
         ''' Tomar medida final de tiempo
             Calcular tiempo de ejecución (t_elapsed)'''
-        end=start=time.perf_counter()
+        end = default_timer()
         t_elapsed=end-start
         print('Time in us: ', t_elapsed)
         print('Algorithm iterations: ', cycles)
         graficaDatos.stem(abscisas, L_seleccion, use_line_collection=True)
     elif met.get() == 3:
         ''' Tomar medida inicial de tiempo '''
+        start = default_timer()
         ''' Aplicar método sort de Python a L_py '''
-        start=start=time.perf_counter()
         L_py.sort()
         ''' Tomar medida final de tiempo
             Calcular tiempo de ejecución (t_elapsed)'''
-        end=start=time.perf_counter()
+        end = default_timer()
         t_elapsed=end-start
         cycles = 'No disponible'
+        print('Time in us: ', t_elapsed)
+        print('Algorithm iterations: ', cycles)
         graficaDatos.stem(abscisas, L_py, use_line_collection=True)
     elif met.get() == 4:
+        ''' Tomar medida inicial de tiempo '''
+        start = default_timer()
         if selPaso.get() == 1:
             animacionMerge()
-        ''' Tomar medida inicial de tiempo '''
-        start=start=time.perf_counter()
         cont = 0
-        print (L_Merge)
+        #print (L_Merge)
         L_Merge,cycles = sortMerge(L_Merge, cont)
-        print (cycles)
-        print (L_Merge)
+        #print (cycles)
+        #print (L_Merge)
         
         ''' Tomar medida final de tiempo
             Calcular tiempo de ejecución (t_elapsed)'''
-        end=start=time.perf_counter()
+        end = default_timer()
         t_elapsed=end-start
         print('Time in us: ', t_elapsed)
         print('Algorithm iterations: ', cycles)
         graficaDatos.stem(abscisas, L_Merge, use_line_collection=True)
     
     elif met.get() == 5:
+        ''' Tomar medida inicial de tiempo '''
+        start = default_timer()
         if selPaso.get() == 1:
             animacionQuick()
-        ''' Tomar medida inicial de tiempo '''
-        start=start=time.perf_counter()
-        print (L_Quick)
+        
+        #print (L_Quick)
         cont = 0
         L_Quick,cycles = sortQuick(L_Quick, cont)
-        print (cycles)
-        print (L_Quick)
+        #print (cycles)
+        #print (L_Quick)
         ''' Tomar medida final de tiempo
             Calcular tiempo de ejecución (t_elapsed)'''
-        end=start=time.perf_counter()
+        end = default_timer()
         t_elapsed=end-start
         print('Time in us: ', t_elapsed)
         print('Algorithm iterations: ', cycles)
         graficaDatos.stem(abscisas, L_Quick, use_line_collection=True)
-    try:
-        print('Time in us: ', t_elapsed)
-    except:
-        return    
-    print('Algorithm iterations: ', cycles)    
-        
+    
     graficaDatos.grid() # Grid on
     canvas.draw()
     res_time.config(text = 'Tiempo: %.2f us' %(t_elapsed*10**6))
@@ -396,7 +409,7 @@ root = Tk()
 root.geometry(str(ANCHO)+'x'+str(ALTO))
 root.title("PRACTICA 7")
 root.grid(widthInc=ANCHO, heightInc = ALTO)
-print(root.grid_size())
+#print(root.grid_size())
 root.resizable(width=False, height=False)
 
 # Elementos de la ventana (widgets)
