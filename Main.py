@@ -9,64 +9,6 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # Funciones propias
 from Sortfunc import *
 
@@ -84,7 +26,12 @@ def animacionBurbuja():
         Fin ciclo interno
         ...
     '''
-    '''
+    for i in range (len(L)):
+        for a in range (len(L)-1):
+            if L[a] > L[a+1]:
+                ca = L[a]
+                L[a]=L[a+1]
+                L[a+1]= ca
         # Actualización de la gráfica
         # (Descomentar una vez se haya implementado
         # la función de selección)
@@ -93,9 +40,7 @@ def animacionBurbuja():
         graficaDatos.stem(abscisas, L, use_line_collection = True)
         graficaDatos.grid() # Grid on
         canvas.draw()        
-    '''    
     '''Fin ciclo externo'''
-
 def animacionSeleccion():
     global graficaDatos, L_sin_ordenar
     L = L_sin_ordenar.copy()
@@ -108,8 +53,12 @@ def animacionSeleccion():
         Fin ciclo interno
         ...
     '''
-    
-    '''
+    for i in range (len(L)):
+        for a in range(i+1,len(L)):
+            if L[a] < L[i]:
+                ca = L[a]
+                L[a] = L[i]
+                L[i] = ca
         # Actualización de la gráfica
         # (Descomentar una vez se haya implementado
         # la función de selección)
@@ -118,20 +67,146 @@ def animacionSeleccion():
         graficaDatos.stem(abscisas, L, use_line_collection=True)
         graficaDatos.grid()        
         canvas.draw()
-    '''
     '''Fin ciclo externo'''
-        
+    
+
+
+def animacionMerge():
+    global graficaDatos, L_sin_ordenar
+    L = L_sin_ordenar.copy()
+    abscisas = range(1,len(L)+1)
+    '''
+    Ciclo externo:
+        ...
+        Ciclo interno:
+            ...
+        Fin ciclo interno
+        ...
+    '''
+    lista = L
+    def sM(L):
+        def mer(left,right):
+            """
+            Asume que left y right son listas ordenas
+            """
+            result = []
+            i = 0
+            j = 0
+            while i < len(left) and j < len(right):
+                if left[i] < right[j]:
+                    result.append(left[i])
+                    i += 1
+                    #print (i,"Left")
+                else:
+                    result.append(right[j])
+                    j += 1
+                    #print (j,"Right")
+            #print (result)
+            while i < len(left):
+                result.append(left[i])
+                i += 1
+                #print (i,"Left")
+            while j < len(right):
+                result.append(right[j])
+                j += 1
+                #print (j,"Right")
+            return result
+        """
+        Asume que L es una lista y retorna una nueva lista ordenada
+        """
+        #print (L)
+        # Actualización de la gráfica
+        # (Descomentar una vez se haya implementado
+        # la función de selección)
+        graficaDatos.clear()
+        plt.pause(0.2)
+        graficaDatos.stem(abscisas, lista , use_line_collection=True)
+        graficaDatos.grid()        
+        canvas.draw()
+        #print (cont)
+        if len(L) < 2:
+            return L[:]
+        else:
+            mid = len(L)//2
+            left = sM(L[:mid])
+            right = sM(L[mid:])
+            #print (left)
+            #print (right)
+            return mer(left,right)
+    sM(L)
+    '''Fin ciclo externo'''
+    
+    
+def animacionQuick():
+    global graficaDatos, L_sin_ordenar
+    L = L_sin_ordenar.copy()
+    abscisas = range(1,len(L)+1)
+    '''
+    Ciclo externo:
+        ...
+        Ciclo interno:
+            ...
+        Fin ciclo interno
+        ...
+    '''
+    lista = L
+    def sQ(L):
+        ''' 
+        Divide y venceras con un pivote 
+        '''
+        # Actualización de la gráfica
+        # (Descomentar una vez se haya implementado
+        # la función de selección)
+        graficaDatos.clear()
+        plt.pause(0.2)
+        graficaDatos.stem(abscisas, lista, use_line_collection=True)
+        graficaDatos.grid()        
+        canvas.draw()
+        #print (cont)
+        left =[]
+        centro = []
+        right = []
+        if len(L)>1:
+            mid = len(L)//2
+            #print (mid)
+            piv = L[mid]
+            for i in L:
+                if i < piv:
+                    left.append(i)
+                elif i == piv:
+                    centro.append(i)
+                elif i > piv:
+                    right.append(i)
+            #print(left+centro+right)
+            left = sQ(left)
+            right = sQ(right)
+            return left+centro+right
+        else:
+            return L
+    sQ(L)
+    '''Fin ciclo externo'''
+    
 # Funciones handler
 
 def generarLista():
     global L_sin_ordenar, minimo, maximo, nMuestras
-    n = int(nMuestras.get())
+    try:
+        n = int(nMuestras.get())
+        lowest=float(minimo.get())
+        highest=float(maximo.get())
+    except:
+        root = Tk()
+        root.geometry(str(350)+'x'+str(60))
+        root.title("Error")
+        #root.text('jeje')
+        etiqueta=Label(root, text='Error. Ingresaste datos erroneos').place(x=0,y=10)
+        etiqueta2=Label(root, text='Cierra esta ventanapara e intentalo nuevamente').place(x=0,y=30)
+        return
     '''
     Obtener los valores de las variables lowest y highest
     simiar a como se obtuvo el valor de n
     Tener en cuenta posibles errores de usuario (ingreso de letras, por ejemplo)
     '''
-    
     L_sin_ordenar = createRandomList(n, lowest, highest)
     x_axis = range(1,len(L_sin_ordenar)+1)        
     graficaDatos.clear()
@@ -146,14 +221,17 @@ def loadInputData():
 	
     if source_selection.get() == 1:
         # Ventana para la seleccion del archivo
-        fname = askopenfilename()        
-        L_sin_ordenar = loadFromFile(fname)
-        print (L_sin_ordenar)
-        x_axis = range(1,len(L_sin_ordenar)+1)        
-        graficaDatos.clear()
-        graficaDatos.stem(x_axis, L_sin_ordenar, use_line_collection=True)
-        graficaDatos.grid()
-        canvas.draw()
+        try:
+            fname = askopenfilename()        
+            L_sin_ordenar = loadFromFile(fname)
+            x_axis = range(1,len(L_sin_ordenar)+1)        
+            graficaDatos.clear()
+            graficaDatos.stem(x_axis, L_sin_ordenar, use_line_collection=True)
+            graficaDatos.grid()
+            canvas.draw()
+        except(FileNotFoundError, ValueError, TypeError):    
+            return
+        
     elif source_selection.get() == 2:
 		# Ventana para la generación aleatoria de la lista
         ventanaGenerador = Tk()
@@ -191,6 +269,12 @@ def loadInputData():
         ventanaGenerador.mainloop()
     else:
         print('Error en loadInputData')
+        root = Tk()
+        root.geometry(str(300)+'x'+str(100))
+        root.title("Error")
+        #root.text('jeje')
+        etiqueta=Label(root, text='Error en loadInputData').place(x=0,y=10)
+        etiqueta2=Label(root, text='Cierra esta ventana e intentalo nuevamente').place(x=0,y=30)
 
 
 def sortHandler():    
@@ -200,81 +284,99 @@ def sortHandler():
     L_burbuja = L_sin_ordenar.copy()
     L_seleccion = L_sin_ordenar.copy()     
     L_py = L_sin_ordenar.copy()
+    L_Merge = L_sin_ordenar.copy()
+    L_Quick = L_sin_ordenar.copy()
     abscisas = range(1,len(L_sin_ordenar)+1)
     graficaDatos.clear()
     # Ejecucion de los metodos elegidos
     if met.get() == 1:
         if selPaso.get() == 1:
             animacionBurbuja()
+            start=start=time.perf_counter()
         ''' Tomar medida inicial de tiempo '''
+        
         cycles = sortBurbuja(L_burbuja)
         ''' Tomar medida final de tiempo
             Calcular tiempo de ejecución (t_elapsed)'''
+        
         graficaDatos.stem(abscisas, L_burbuja, use_line_collection=True)
+        end=start=time.perf_counter()
+        t_elapsed=end-start
+        print('Time in us: ', t_elapsed)
+        print('Algorithm iterations: ', cycles)
     elif met.get() == 2:
         if selPaso.get() == 1:
             animacionSeleccion()
         ''' Tomar medida inicial de tiempo '''
+        start=start=time.perf_counter()
         cycles = sortSeleccion(L_seleccion)
+        
         ''' Tomar medida final de tiempo
             Calcular tiempo de ejecución (t_elapsed)'''
+        end=start=time.perf_counter()
+        t_elapsed=end-start
+        print('Time in us: ', t_elapsed)
+        print('Algorithm iterations: ', cycles)
         graficaDatos.stem(abscisas, L_seleccion, use_line_collection=True)
     elif met.get() == 3:
         ''' Tomar medida inicial de tiempo '''
         ''' Aplicar método sort de Python a L_py '''
+        start=start=time.perf_counter()
         L_py.sort()
         ''' Tomar medida final de tiempo
             Calcular tiempo de ejecución (t_elapsed)'''
+        end=start=time.perf_counter()
+        t_elapsed=end-start
         cycles = 'No disponible'
         graficaDatos.stem(abscisas, L_py, use_line_collection=True)
+    elif met.get() == 4:
+        if selPaso.get() == 1:
+            animacionMerge()
+        ''' Tomar medida inicial de tiempo '''
+        start=start=time.perf_counter()
+        cont = 0
+        print (L_Merge)
+        L_Merge,cycles = sortMerge(L_Merge, cont)
+        print (cycles)
+        print (L_Merge)
         
-    print('Time in us: ', t_elapsed)
+        ''' Tomar medida final de tiempo
+            Calcular tiempo de ejecución (t_elapsed)'''
+        end=start=time.perf_counter()
+        t_elapsed=end-start
+        print('Time in us: ', t_elapsed)
+        print('Algorithm iterations: ', cycles)
+        graficaDatos.stem(abscisas, L_Merge, use_line_collection=True)
+    
+    elif met.get() == 5:
+        if selPaso.get() == 1:
+            animacionQuick()
+        ''' Tomar medida inicial de tiempo '''
+        start=start=time.perf_counter()
+        print (L_Quick)
+        cont = 0
+        L_Quick,cycles = sortQuick(L_Quick, cont)
+        print (cycles)
+        print (L_Quick)
+        ''' Tomar medida final de tiempo
+            Calcular tiempo de ejecución (t_elapsed)'''
+        end=start=time.perf_counter()
+        t_elapsed=end-start
+        print('Time in us: ', t_elapsed)
+        print('Algorithm iterations: ', cycles)
+        graficaDatos.stem(abscisas, L_Quick, use_line_collection=True)
+    try:
+        print('Time in us: ', t_elapsed)
+    except:
+        return    
     print('Algorithm iterations: ', cycles)    
         
     graficaDatos.grid() # Grid on
     canvas.draw()
     res_time.config(text = 'Tiempo: %.2f us' %(t_elapsed*10**6))
     res_cycles.config(text = 'Iteraciones: '+str(cycles))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    
+    
 '''**** Interfaz grafica ****'''
 
 ANCHO =650
@@ -294,7 +396,7 @@ root = Tk()
 root.geometry(str(ANCHO)+'x'+str(ALTO))
 root.title("PRACTICA 7")
 root.grid(widthInc=ANCHO, heightInc = ALTO)
-#print(root.grid_size())
+print(root.grid_size())
 root.resizable(width=False, height=False)
 
 # Elementos de la ventana (widgets)

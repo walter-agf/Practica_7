@@ -4,6 +4,7 @@ def loadFromFile(name):
         Retorna una lista de floats con cada uno 
         de los números extraídos del archivo name
     '''
+    name = open(name,"r")
     name = name.readlines()
     cont = 0
     for i in name:
@@ -110,8 +111,29 @@ def sortMerge(L,cont):
         #print (left)
         #print (right)
         return merge(left,right),cont
-def sortQuick(L):
+def sortQuick(L,cont):
     ''' 
-        
+    Divide y venceras con un pivote 
     '''
-    pass
+    cont += 1
+    #print (cont)
+    left =[]
+    centro = []
+    right = []
+    if len(L)>1:
+        mid = len(L)//2
+        #print (mid)
+        piv = L[mid]
+        for i in L:
+            if i < piv:
+                left.append(i)
+            elif i == piv:
+                centro.append(i)
+            elif i > piv:
+                right.append(i)
+        #print(left+centro+right)
+        left,cont= sortQuick(left,cont)
+        right,cont = sortQuick(right,cont)
+        return left+centro+right,cont
+    else:
+        return L,cont
